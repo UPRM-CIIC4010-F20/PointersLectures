@@ -5,23 +5,35 @@ using namespace std;
 
 class Node {
     public:
-    string label;
+    string* label;
     Node* next;
-    Node(string label, Node* next): label(label), next(next) { }
+    Node(string* label, Node* next): label(label), next(next) { }
+    ~Node();
 };
 
-static Node node("Global Node", nullptr);
-static Node* nodePtr = &node;
+Node::~Node() {
+    delete this->label;
+}
 
-static int f() {
-    nodePtr = new Node("f() Node",nullptr);
-    // nodePtr->label = new string("Local Node");
+static Node node(new string("Global Node"), nullptr);
+static Node* nodePtr = new Node(new string("Global Node #2"),nullptr);
+static Node* nodePtr2 = nodePtr;
 
-    return 0;
+static void f() {
+    int bar = 0;
+    delete nodePtr;
+    nodePtr = new Node(new string("f() Node"),nullptr);
 }
 
 int main() {
-    //  while (true) {
-        f();
-    //  } 
+    int foo = 0;
+    delete nodePtr;
+    delete nodePtr2;
+    nodePtr = nullptr;
+    nodePtr2 = nullptr;
+
+    cout << nodePtr2->label << endl;
+    // while (true) {
+    //     f();
+    // }
 }
